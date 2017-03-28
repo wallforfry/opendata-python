@@ -169,7 +169,8 @@ def mergeInfo():
         c["hydroelectric"] = hydroelectric.get(key)
         c["other"] = other.get(key)
         world.append(c)
-    print(world)
+
+    return world
 
 
 
