@@ -46,7 +46,7 @@ class GUI(QWidget):
         if state == Qt.Checked:
             self.setWindowTitle('Checked')
         else:
-            self.setWindowTitle('OpenData python')
+            self.setWindowTitle('OpenData Python')
 
 
 def main():
@@ -55,4 +55,5 @@ def main():
     gui.createButton("test", "tooltip", 50, 50)
     gui.createCB()
     gui.show()
+
     app.exec()
