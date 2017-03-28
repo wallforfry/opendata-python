@@ -8,3 +8,10 @@ To do :
 Idea :
 - Country color = data
 - Point on country = consumption of energies
+
+Data :
+- Electricty consumption : https://www.cia.gov/library/publications/the-world-factbook/fields/2233.html#xx
+- From fossil : https://www.cia.gov/library/publications/the-world-factbook/fields/2237.html#xx
+- From nuclear : https://www.cia.gov/library/publications/the-world-factbook/fields/2239.html#xx
+- From hydroelectric : https://www.cia.gov/library/publications/the-world-factbook/fields/2238.html#xx
+- From other renewalbe : https://www.cia.gov/library/publications/the-world-factbook/fields/2240.html#xx
