@@ -1,3 +1,10 @@
-A faire :
+To do :
+- Get data from https://www.cia.gov/library/publications/the-world-factbook/geos/xx.html
+- Parse data (percentage in String)
+- Create bar chart
+- Create Map
+- Create IHM for data selection
 
-Idées :
+Idea :
+- Country color = data
+- Point on country = consumption of energies
