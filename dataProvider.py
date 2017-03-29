@@ -6,7 +6,8 @@ Date : 29/03/2017
 """
 import urllib.request
 from html.parser import HTMLParser
-
+import json
+import time
 
 class MyParser(HTMLParser):
     def error(self, message):
@@ -165,6 +166,8 @@ def mergeInfo():
         c["nuclear"] = nuclear.get(key)
         c["hydroelectric"] = hydroelectric.get(key)
         c["other"] = other.get(key)
+        c["coordonates"] = get_coordonates(key)
+        time.sleep(.15)
         world.append(c)
 
     return world
@@ -197,3 +200,6 @@ def main(url):
     # print("td class=\"titleColumn\"")
 
     return None
+
+if __name__ == "__main__":
+    print(get_infos())

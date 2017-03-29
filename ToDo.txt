@@ -5,6 +5,8 @@ To do :
 - Create Map
 - Create IHM for data selection
 
+-- IF there is no data, return -1 value
+
 Idea :
 - Country color = data
 - Point on country = consumption of energies
