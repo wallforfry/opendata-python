@@ -173,12 +173,22 @@ def mergeInfo():
     return world
 
 
+def get_coordonates(address):
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urllib.request.quote(address)
+    try:
+        html_data = urllib.request.urlopen(url)
+        data = html_data.read().decode('utf8')
+        result = json.loads(data)
+
+        return result["results"][0]["geometry"]["location"]
+
+    except urllib.error.URLError as e:
+        print("Pas de connexion internet")
+
 
 def main(url):
 
     mergeInfo()
-
-
 
     #proxy_address = 'http://147.215.1.189:3128/'
     #proxy_handler = urllib.request.ProxyHandler({'http': proxy_address})
