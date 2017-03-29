@@ -1,3 +1,9 @@
+"""
+Project : OpenData-python
+File : test.py
+Author : DELEVACQ Wallerand
+Date : 29/03/2017
+"""
 import urllib.request
 from html.parser import HTMLParser
 
@@ -23,7 +29,6 @@ class MyParser(HTMLParser):
         self.other = False
         self.info = info
 
-
     def handle_starttag(self, tag, attrs):
         if tag == "td":
             if attrs[0][0] == 'class' and attrs[0][1] == 'country':
@@ -45,11 +50,6 @@ class MyParser(HTMLParser):
                 elif self.info == "other":
                     self.other = True
 
-
-
-
-
-
     def handle_endtag(self, tag):
         self.country = False
         self.consumption = False
@@ -57,7 +57,6 @@ class MyParser(HTMLParser):
         self.nuclear = False
         self.hydroelectric = False
         self.other = False
-
 
     def handle_data(self, data):
         if self.country:
@@ -74,11 +73,7 @@ class MyParser(HTMLParser):
             self.otherPerc.append(data[1:])
 
 
-
-
-
 def getConsumption(html_data):
-
     parser = MyParser("consumption")
     parser.feed(html_data)
     d = {}
@@ -89,8 +84,8 @@ def getConsumption(html_data):
 
     return d
 
-def getFossil(html_data):
 
+def getFossil(html_data):
     parser = MyParser("fossil")
     parser.feed(html_data)
     d = {}
@@ -113,6 +108,7 @@ def getNuclear(html_data):
 
     return d
 
+
 def getHydroelectric(html_data):
     parser = MyParser("hydroelectric")
     parser.feed(html_data)
@@ -123,6 +119,7 @@ def getHydroelectric(html_data):
         j += 1
 
     return d
+
 
 def getOther(html_data):
     parser = MyParser("other")
@@ -186,18 +183,17 @@ def get_coordonates(address):
         print("Pas de connexion internet")
 
 
-def main(url):
+def get_infos():
+    return mergeInfo()
 
+
+def main(url):
     mergeInfo()
 
-    #proxy_address = 'http://147.215.1.189:3128/'
-    #proxy_handler = urllib.request.ProxyHandler({'http': proxy_address})
-    #opener = urllib.request.build_opener(proxy_handler)
-    #urllib.request.install_opener(opener)
-    #print("td class=\"titleColumn\"")
+    # proxy_address = 'http://147.215.1.189:3128/'
+    # proxy_handler = urllib.request.ProxyHandler({'http': proxy_address})
+    # opener = urllib.request.build_opener(proxy_handler)
+    # urllib.request.install_opener(opener)
+    # print("td class=\"titleColumn\"")
 
     return None
-
-
-if __name__ == '__main__':
-    main("https://www.cia.gov/library/publications/the-world-factbook/fields/2233.html#xx")
