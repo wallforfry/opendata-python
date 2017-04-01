@@ -1,6 +1,6 @@
 """
 Project : OpenData-python
-File : test.py
+File : dataProvider.py
 Author : COHEN Johana
 Date : 29/03/2017
 """
@@ -140,10 +140,18 @@ def get_lat_long():
     Retrieve lat and long with GoogleMaps Geocoding API and store it into countryCoordonates.json
     :return: None
     """
-    infos = merge_info()
+    url = "https://www.cia.gov/library/publications/the-world-factbook/fields/2233.html#xx"
+    try:
+        u = urllib.request.urlopen(url)
+    except urllib.request.URLError:
+        print("Pas de connexion internet")
+        return
+
+    data = u.read().decode('utf8')
+    countrys = get_consumption(data).keys()
     result = []
-    for elt in infos:
-        result.append({"country": elt.get("country"), "coordonates": get_coordonates(elt.get("country"))})
+    for country in countrys:
+        result.append({"country": country, "coordonates": get_coordonates(country)})
 
     with open("countryCoordonates.json", mode="w") as f:
         f.write(json.dumps(result))
