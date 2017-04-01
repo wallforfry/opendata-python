@@ -236,56 +236,60 @@ def get_infos_for_basemap():
     "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab,
     "latitude": latitude_tab, "longitude": longitude_tab}
     """
-    infos = json.load(open("data.json", mode="r"))
+    try:
+        infos = json.load(open("data.json", mode="r"))
 
-    country_tab = []
-    consumption_tab = []
-    fossil_tab = []
-    nuclear_tab = []
-    hydroelectric_tab = []
-    renewable_tab = []
-    longitude_tab = []
-    latitude_tab = []
+        country_tab = []
+        consumption_tab = []
+        fossil_tab = []
+        nuclear_tab = []
+        hydroelectric_tab = []
+        renewable_tab = []
+        longitude_tab = []
+        latitude_tab = []
 
-    for elt in infos:
-        country = elt.get("country")
-        country_tab.append(country)
+        for elt in infos:
+            country = elt.get("country")
+            country_tab.append(country)
 
-        consumption = elt.get("consumption")
-        consumption = consumption[:consumption.find(" ")].replace(",", ".")
-        if consumption == "Non":
-            consumption = "0"
-        consumption_tab.append(float(consumption))
+            consumption = elt.get("consumption")
+            consumption = consumption[:consumption.find(" ")].replace(",", ".")
+            if consumption == "Non":
+                consumption = "0"
+            consumption_tab.append(float(consumption))
 
-        fossil = str(elt.get("fossil"))
-        fossil = fossil[:fossil.find("%")].replace(",", ".")
-        if fossil == "Non":
-            fossil = "0"
-        fossil_tab.append(float(fossil))
+            fossil = str(elt.get("fossil"))
+            fossil = fossil[:fossil.find("%")].replace(",", ".")
+            if fossil == "Non":
+                fossil = "0"
+            fossil_tab.append(float(fossil))
 
-        nuclear = str(elt.get("nuclear"))
-        nuclear = nuclear[:nuclear.find("%")].replace(",", ".")
-        if nuclear == "Non":
-            nuclear = "0"
-        nuclear_tab.append(float(nuclear))
+            nuclear = str(elt.get("nuclear"))
+            nuclear = nuclear[:nuclear.find("%")].replace(",", ".")
+            if nuclear == "Non":
+                nuclear = "0"
+            nuclear_tab.append(float(nuclear))
 
-        hydroelectric = str(elt.get("hydroelectric"))
-        hydroelectric = hydroelectric[:hydroelectric.find("%")].replace(",", ".")
-        if hydroelectric == "Non":
-            hydroelectric = "0"
-        hydroelectric_tab.append(float(hydroelectric))
+            hydroelectric = str(elt.get("hydroelectric"))
+            hydroelectric = hydroelectric[:hydroelectric.find("%")].replace(",", ".")
+            if hydroelectric == "Non":
+                hydroelectric = "0"
+            hydroelectric_tab.append(float(hydroelectric))
 
-        other = str(elt.get("other"))
-        other = other[:other.find("%")].replace(",", ".")
-        if other == "Non":
-            other = "0"
-        renewable_tab.append(float(other))
+            other = str(elt.get("other"))
+            other = other[:other.find("%")].replace(",", ".")
+            if other == "Non":
+                other = "0"
+            renewable_tab.append(float(other))
 
-        longitude_tab.append(float(elt.get("coordonates").get("lng")))
-        latitude_tab.append(float(elt.get("coordonates").get("lat")))
+            longitude_tab.append(float(elt.get("coordonates").get("lng")))
+            latitude_tab.append(float(elt.get("coordonates").get("lat")))
 
-    return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab, "longitude": longitude_tab}
+        return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab, "longitude": longitude_tab}
 
+    except FileNotFoundError:
+        mergeInfo()
+        return get_infos_for_basemap()
 
 if __name__ == "__main__":
     mergeInfo()
