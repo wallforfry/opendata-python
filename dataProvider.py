@@ -1,7 +1,7 @@
 """
 Project : OpenData-python
 File : test.py
-Author : DELEVACQ Wallerand
+Author : COHEN Johana
 Date : 29/03/2017
 """
 import urllib.request
