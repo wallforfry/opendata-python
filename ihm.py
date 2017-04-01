@@ -29,6 +29,7 @@ from functools import partial
 
 from dataProvider import *
 
+
 class ApplicationWindow(QtWidgets.QMainWindow):
     """
     Main window of the app. This window contain button, menus, maps and graphs
@@ -47,7 +48,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.renewable = self.infos.get("renewable")
         self.latitude = self.infos.get("latitude")
         self.longitude = self.infos.get("longitude")
-
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("OpenData Python")
@@ -119,12 +119,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.fileQuit()
 
     def update_data(self):
-        #get_lat_long()
+        """
+        Update data.json with new data, open dialog when it's ended
+        :return: None
+        """
+        # get_lat_long()
         merge_info()
         QtWidgets.QMessageBox.about(self, "Update data",
                                     """Data are now up to date"""
                                     )
-
 
     def about(self):
         """
@@ -148,8 +151,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.figure.clear()
 
     def plot_map2(self):
-        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, \
-                    llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
+        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
         m.drawcoastlines()
         m.fillcontinents(color='red', lake_color='aqua')
         # draw parallels and meridians.
@@ -171,8 +173,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         MIN_TEMP = min(TEMPS)
         MY_MAP = Basemap(projection='robin', lat_0=0, lon_0=-100,
-                      resolution='l', area_thresh=1000.0)
-        #MY_MAP.bluemarble()
+                         resolution='l', area_thresh=1000.0)
+        # MY_MAP.bluemarble()
         MY_MAP.drawcoastlines()
         MY_MAP.drawmapboundary(fill_color='aqua')
         MY_MAP.drawcountries()
@@ -189,7 +191,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=TEMPS, cmap=CMAP)
         plt.title('Température moyenne à 12:00 (janvier 2014)')
         plt.colorbar(SCA)
-        #plt.show()
+        # plt.show()
         self.first_canvas.draw()
         self.figure.clear()
 

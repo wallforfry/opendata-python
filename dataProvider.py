@@ -12,24 +12,15 @@ import time
 
 class MyParser(HTMLParser):
     def error(self, message):
-        print("erreur")
+        print("Error")
         pass
 
-    def __init__(self, info):
+    def __init__(self):
         super().__init__()
         self.countries = []
-        self.consumptions = []
-        self.fossilPerc = []
-        self.hydroelectricPerc = []
-        self.otherPerc = []
-        self.nuclearPerc = []
+        self.datas = []
         self.country = False
-        self.consumption = False
-        self.fossil = False
-        self.nuclear = False
-        self.hydroelectric = False
-        self.other = False
-        self.info = info
+        self.data = False
 
     def handle_starttag(self, tag, attrs):
         if tag == "td":
@@ -37,99 +28,99 @@ class MyParser(HTMLParser):
                 self.country = True
 
             if attrs[0][0] == 'class' and attrs[0][1] == 'fieldData':
-                if self.info == "consumption":
-                    self.consumption = True
-
-                elif self.info == "fossil":
-                    self.fossil = True
-
-                elif self.info == "nuclear":
-                    self.nuclear = True
-
-                elif self.info == "hydroelectric":
-                    self.hydroelectric = True
-
-                elif self.info == "other":
-                    self.other = True
+                self.data = True
 
     def handle_endtag(self, tag):
         self.country = False
-        self.consumption = False
-        self.fossil = False
-        self.nuclear = False
-        self.hydroelectric = False
-        self.other = False
+        self.data = False
 
     def handle_data(self, data):
         if self.country:
             self.countries.append(data)
-        if self.consumption:
-            self.consumptions.append(data[1:])
-        if self.fossil:
-            self.fossilPerc.append(data[1:])
-        if self.nuclear:
-            self.nuclearPerc.append(data[1:])
-        if self.hydroelectric:
-            self.hydroelectricPerc.append(data[1:])
-        if self.other:
-            self.otherPerc.append(data[1:])
+        if self.data:
+            self.datas.append(data[1:])
 
 
 def get_consumption(html_data):
-    parser = MyParser("consumption")
+    """
+    Get consumption from website
+    :param html_data: data from website
+    :return: parsed data
+    """
+    parser = MyParser()
     parser.feed(html_data)
     d = {}
     j = 0
     for i in parser.countries:
-        d[i] = parser.consumptions[j]
+        d[i] = parser.datas[j]
         j += 1
 
     return d
 
 
 def get_fossil(html_data):
-    parser = MyParser("fossil")
+    """
+        Get fossil from website
+        :param html_data: data from website
+        :return: parsed data
+        """
+    parser = MyParser()
     parser.feed(html_data)
     d = {}
     j = 0
     for i in parser.countries:
-        d[i] = parser.fossilPerc[j]
+        d[i] = parser.datas[j]
         j += 1
 
     return d
 
 
 def get_nuclear(html_data):
-    parser = MyParser("nuclear")
+    """
+        Get nuclear from website
+        :param html_data: data from website
+        :return: parsed data
+        """
+    parser = MyParser()
     parser.feed(html_data)
     d = {}
     j = 0
     for i in parser.countries:
-        d[i] = parser.nuclearPerc[j]
+        d[i] = parser.datas[j]
         j += 1
 
     return d
 
 
 def get_hydroelectric(html_data):
-    parser = MyParser("hydroelectric")
+    """
+        Get hydroelectric from website
+        :param html_data: data from website
+        :return: parsed data
+        """
+    parser = MyParser()
     parser.feed(html_data)
     d = {}
     j = 0
     for i in parser.countries:
-        d[i] = parser.hydroelectricPerc[j]
+        d[i] = parser.datas[j]
         j += 1
 
     return d
 
 
 def get_other(html_data):
-    parser = MyParser("other")
+    """
+        Get renewable from website
+        :param html_data: data from website
+        :return: parsed data
+        """
+    parser = MyParser()
     parser.feed(html_data)
     d = {}
     j = 0
     for i in parser.countries:
-        d[i] = parser.otherPerc[j]
+        d[i] = parser.datas[j]
         j += 1
 
     return d
