@@ -189,7 +189,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         LONGS = self.longitude
         TEMPS = self.fossil
 
-        print(len(LATS))
+        print(LATS)
         print(len(LONGS))
         print(len(TEMPS))
 

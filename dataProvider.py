@@ -9,6 +9,7 @@ from html.parser import HTMLParser
 import json
 import time
 
+
 class MyParser(HTMLParser):
     def error(self, message):
         print("erreur")
@@ -167,20 +168,28 @@ def mergeInfo():
         c["hydroelectric"] = hydroelectric.get(key)
         c["other"] = other.get(key)
         c["coordonates"] = get_coordonates(key)
-        time.sleep(.15)
+        #time.sleep(.15)
         world.append(c)
 
     return world
 
 
+def getGoogleApiKey():
+    return open("googleApiKey.txt", mode="r").readline()
+
 def get_coordonates(address):
-    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urllib.request.quote(address)
+    apiKey = getGoogleApiKey()
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urllib.request.quote(address)+"&key="+apiKey
     try:
         html_data = urllib.request.urlopen(url)
         data = html_data.read().decode('utf8')
         result = json.loads(data)
-
-        return result["results"][0]["geometry"]["location"]
+        try:
+            value = result["results"][0]["geometry"]["location"]
+            return value
+        except IndexError as e:
+            print(result)
+            print(e)
 
     except urllib.error.URLError as e:
         print("Pas de connexion internet")
