@@ -38,49 +38,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
 
         # Get infos from parser
-        #self.infos = get_infos()
-
-        self.infos = []
-        with open("data.json", mode="r") as f:
-            self.infos = json.load(f)
-
-        self.consumption = []
-        self.fossil = []
-        self.nuclear = []
-        self.hydroelectric = []
-        self.renewable = []
-        self.longitude = []
-        self.latitude = []
-
-        for elt in self.infos:
-            consumption = elt.get("consumption")
-            consumption = consumption[:consumption.find(" ")].replace(",", ".")
-            if consumption == "Non":
-                consumption = "0"
-            self.consumption.append(float(consumption))
-            fossil = str(elt.get("fossil"))
-            fossil = fossil[:fossil.find("%")].replace(",", ".")
-            if fossil == "Non":
-                fossil = "0"
-            self.fossil.append(float(fossil))
-            nuclear = str(elt.get("nuclear"))
-            nuclear = nuclear[:nuclear.find("%")].replace(",", ".")
-            if nuclear == "Non":
-                nuclear = "0"
-            self.nuclear.append(float(nuclear))
-            hydroelectric = str(elt.get("hydroelectric"))
-            hydroelectric = hydroelectric[:hydroelectric.find("%")].replace(",", ".")
-            if hydroelectric == "Non":
-                hydroelectric = "0"
-            self.hydroelectric.append(float(hydroelectric))
-            other = str(elt.get("other"))
-            other = other[:other.find("%")].replace(",", ".")
-            if other == "Non":
-                other = "0"
-            self.renewable.append(float(other))
-            self.longitude.append(float(elt.get("coordonates").get("lng")))
-            self.latitude.append(float(elt.get("coordonates").get("lat")))
-
+        self.infos = get_infos_for_basemap()
+        self.country = self.infos.get("country")
+        self.consumption = self.infos.get("consumption")
+        self.fossil = self.infos.get("fossil")
+        self.nuclear = self.infos.get("nuclear")
+        self.hydroelectric = self.infos.get("hydroelectric")
+        self.renewable = self.infos.get("renewable")
+        self.latitude = self.infos.get("latitude")
+        self.longitude = self.infos.get("longitude")
 
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
