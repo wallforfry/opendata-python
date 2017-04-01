@@ -120,7 +120,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
     def update_data(self):
         #get_lat_long()
-        mergeInfo()
+        merge_info()
         QtWidgets.QMessageBox.about(self, "Update data",
                                     """Data are now up to date"""
                                     )

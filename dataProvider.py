@@ -75,7 +75,7 @@ class MyParser(HTMLParser):
             self.otherPerc.append(data[1:])
 
 
-def getConsumption(html_data):
+def get_consumption(html_data):
     parser = MyParser("consumption")
     parser.feed(html_data)
     d = {}
@@ -87,7 +87,7 @@ def getConsumption(html_data):
     return d
 
 
-def getFossil(html_data):
+def get_fossil(html_data):
     parser = MyParser("fossil")
     parser.feed(html_data)
     d = {}
@@ -99,7 +99,7 @@ def getFossil(html_data):
     return d
 
 
-def getNuclear(html_data):
+def get_nuclear(html_data):
     parser = MyParser("nuclear")
     parser.feed(html_data)
     d = {}
@@ -111,7 +111,7 @@ def getNuclear(html_data):
     return d
 
 
-def getHydroelectric(html_data):
+def get_hydroelectric(html_data):
     parser = MyParser("hydroelectric")
     parser.feed(html_data)
     d = {}
@@ -123,7 +123,7 @@ def getHydroelectric(html_data):
     return d
 
 
-def getOther(html_data):
+def get_other(html_data):
     parser = MyParser("other")
     parser.feed(html_data)
     d = {}
@@ -140,7 +140,7 @@ def get_lat_long():
     Retrieve lat and long with GoogleMaps Geocoding API and store it into countryCoordonates.json
     :return: None
     """
-    infos = mergeInfo()
+    infos = merge_info()
     result = []
     for elt in infos:
         result.append({"country": elt.get("country"), "coordonates": get_coordonates(elt.get("country"))})
@@ -149,7 +149,7 @@ def get_lat_long():
         f.write(json.dumps(result))
 
 
-def mergeInfo():
+def merge_info():
     """
     Merge infos from web parsing and country's coordonates json file into data.json file
     :return: None
@@ -174,11 +174,11 @@ def mergeInfo():
     coordonates = json.loads(open("countryCoordonates.json", mode="r").read())
     i = 0
 
-    consumption = getConsumption(dt[0])
-    fossil = getFossil(dt[1])
-    nuclear = getNuclear(dt[2])
-    hydroelectric = getHydroelectric(dt[3])
-    other = getOther(dt[4])
+    consumption = get_consumption(dt[0])
+    fossil = get_fossil(dt[1])
+    nuclear = get_nuclear(dt[2])
+    hydroelectric = get_hydroelectric(dt[3])
+    other = get_other(dt[4])
     world = []
     for key in consumption.keys():
         c = {}
@@ -288,8 +288,8 @@ def get_infos_for_basemap():
         return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab, "longitude": longitude_tab}
 
     except FileNotFoundError:
-        mergeInfo()
+        merge_info()
         return get_infos_for_basemap()
 
 if __name__ == "__main__":
-    mergeInfo()
+    merge_info()
