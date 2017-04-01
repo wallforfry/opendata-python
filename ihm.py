@@ -56,6 +56,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Menu bar
         self.file_menu = QtWidgets.QMenu('&File', self)
+        self.file_menu.addAction('&Update data', self.update_data,
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_R)
         self.file_menu.addAction('&Quit', self.fileQuit,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
@@ -115,6 +117,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, ce):
         self.fileQuit()
+
+    def update_data(self):
+        #get_lat_long()
+        mergeInfo()
+        QtWidgets.QMessageBox.about(self, "Update data",
+                                    """Data are now up to date"""
+                                    )
+
 
     def about(self):
         """
