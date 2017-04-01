@@ -4,6 +4,7 @@ File : dataProvider.py
 Author : COHEN Johana
 Date : 29/03/2017
 """
+
 import urllib.request
 from html.parser import HTMLParser
 import json
@@ -41,80 +42,12 @@ class MyParser(HTMLParser):
             self.datas.append(data[1:])
 
 
-def get_consumption(html_data):
+def get_data(html_data):
     """
-    Get consumption from website
+    Get datas from website
     :param html_data: data from website
     :return: parsed data
     """
-    parser = MyParser()
-    parser.feed(html_data)
-    d = {}
-    j = 0
-    for i in parser.countries:
-        d[i] = parser.datas[j]
-        j += 1
-
-    return d
-
-
-def get_fossil(html_data):
-    """
-        Get fossil from website
-        :param html_data: data from website
-        :return: parsed data
-        """
-    parser = MyParser()
-    parser.feed(html_data)
-    d = {}
-    j = 0
-    for i in parser.countries:
-        d[i] = parser.datas[j]
-        j += 1
-
-    return d
-
-
-def get_nuclear(html_data):
-    """
-        Get nuclear from website
-        :param html_data: data from website
-        :return: parsed data
-        """
-    parser = MyParser()
-    parser.feed(html_data)
-    d = {}
-    j = 0
-    for i in parser.countries:
-        d[i] = parser.datas[j]
-        j += 1
-
-    return d
-
-
-def get_hydroelectric(html_data):
-    """
-        Get hydroelectric from website
-        :param html_data: data from website
-        :return: parsed data
-        """
-    parser = MyParser()
-    parser.feed(html_data)
-    d = {}
-    j = 0
-    for i in parser.countries:
-        d[i] = parser.datas[j]
-        j += 1
-
-    return d
-
-
-def get_other(html_data):
-    """
-        Get renewable from website
-        :param html_data: data from website
-        :return: parsed data
-        """
     parser = MyParser()
     parser.feed(html_data)
     d = {}
@@ -173,11 +106,11 @@ def merge_info():
     coordonates = json.loads(open("countryCoordonates.json", mode="r").read())
     i = 0
 
-    consumption = get_consumption(dt[0])
-    fossil = get_fossil(dt[1])
-    nuclear = get_nuclear(dt[2])
-    hydroelectric = get_hydroelectric(dt[3])
-    other = get_other(dt[4])
+    consumption = get_data(dt[0])
+    fossil = get_data(dt[1])
+    nuclear = get_data(dt[2])
+    hydroelectric = get_data(dt[3])
+    other = get_data(dt[4])
     world = []
     for key in consumption.keys():
         c = {}
@@ -284,11 +217,14 @@ def get_infos_for_basemap():
             longitude_tab.append(float(elt.get("coordonates").get("lng")))
             latitude_tab.append(float(elt.get("coordonates").get("lat")))
 
-        return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab, "longitude": longitude_tab}
+        return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab,
+                "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab,
+                "longitude": longitude_tab}
 
     except FileNotFoundError:
         merge_info()
         return get_infos_for_basemap()
+
 
 if __name__ == "__main__":
     merge_info()
