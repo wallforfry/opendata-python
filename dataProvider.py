@@ -135,7 +135,25 @@ def getOther(html_data):
     return d
 
 
+def get_lat_long():
+    """
+    Retrieve lat and long with GoogleMaps Geocoding API and store it into countryCoordonates.json
+    :return: None
+    """
+    infos = mergeInfo()
+    result = []
+    for elt in infos:
+        result.append({"country": elt.get("country"), "coordonates": get_coordonates(elt.get("country"))})
+
+    with open("countryCoordonates.json", mode="w") as f:
+        f.write(json.dumps(result))
+
+
 def mergeInfo():
+    """
+    Merge infos from web parsing and country's coordonates json file into data.json file
+    :return: None
+    """
     l = []
     l.append("https://www.cia.gov/library/publications/the-world-factbook/fields/2233.html#xx")
     l.append("https://www.cia.gov/library/publications/the-world-factbook/fields/2237.html#xx")
@@ -153,6 +171,9 @@ def mergeInfo():
         data = u.read().decode('utf8')
         dt.append(data)
 
+    coordonates = json.loads(open("countryCoordonates.json", mode="r").read())
+    i = 0
+
     consumption = getConsumption(dt[0])
     fossil = getFossil(dt[1])
     nuclear = getNuclear(dt[2])
@@ -167,19 +188,32 @@ def mergeInfo():
         c["nuclear"] = nuclear.get(key)
         c["hydroelectric"] = hydroelectric.get(key)
         c["other"] = other.get(key)
-        c["coordonates"] = get_coordonates(key)
-        #time.sleep(.15)
+        c["coordonates"] = coordonates[i].get("coordonates")
         world.append(c)
 
-    return world
+        i += 1
+
+    with open("data.json", mode="w") as f:
+        f.write(json.dumps(world))
 
 
-def getGoogleApiKey():
+def get_google_api_key():
+    """
+    Get GoogleMaps Geocoding api key from googleApiKey.txt file
+    :return: String ApiKey
+    """
     return open("googleApiKey.txt", mode="r").readline()
 
+
 def get_coordonates(address):
-    apiKey = getGoogleApiKey()
-    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urllib.request.quote(address)+"&key="+apiKey
+    """
+    Get coordonates (lat, lng) with GoogleMaps Geocoding API
+    :param address: address you want to get
+    :return: {"lat": LATITUDE, "lng": LONGITUDE}
+    """
+    apiKey = get_google_api_key()
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urllib.request.quote(
+        address) + "&key=" + apiKey
     try:
         html_data = urllib.request.urlopen(url)
         data = html_data.read().decode('utf8')
@@ -188,27 +222,70 @@ def get_coordonates(address):
             value = result["results"][0]["geometry"]["location"]
             return value
         except IndexError as e:
-            print(result)
             print(e)
 
     except urllib.error.URLError as e:
         print("Pas de connexion internet")
 
 
-def get_infos():
-    return mergeInfo()
+def get_infos_for_basemap():
+    """
+    Return infos formated for basemap use
 
+    :return: {"country": country_tab, "consumption": consumption_tab,
+    "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab,
+    "latitude": latitude_tab, "longitude": longitude_tab}
+    """
+    infos = json.load(open("data.json", mode="r"))
 
-def main(url):
-    mergeInfo()
+    country_tab = []
+    consumption_tab = []
+    fossil_tab = []
+    nuclear_tab = []
+    hydroelectric_tab = []
+    renewable_tab = []
+    longitude_tab = []
+    latitude_tab = []
 
-    # proxy_address = 'http://147.215.1.189:3128/'
-    # proxy_handler = urllib.request.ProxyHandler({'http': proxy_address})
-    # opener = urllib.request.build_opener(proxy_handler)
-    # urllib.request.install_opener(opener)
-    # print("td class=\"titleColumn\"")
+    for elt in infos:
+        country = elt.get("country")
+        country_tab.append(country)
 
-    return None
+        consumption = elt.get("consumption")
+        consumption = consumption[:consumption.find(" ")].replace(",", ".")
+        if consumption == "Non":
+            consumption = "0"
+        consumption_tab.append(float(consumption))
+
+        fossil = str(elt.get("fossil"))
+        fossil = fossil[:fossil.find("%")].replace(",", ".")
+        if fossil == "Non":
+            fossil = "0"
+        fossil_tab.append(float(fossil))
+
+        nuclear = str(elt.get("nuclear"))
+        nuclear = nuclear[:nuclear.find("%")].replace(",", ".")
+        if nuclear == "Non":
+            nuclear = "0"
+        nuclear_tab.append(float(nuclear))
+
+        hydroelectric = str(elt.get("hydroelectric"))
+        hydroelectric = hydroelectric[:hydroelectric.find("%")].replace(",", ".")
+        if hydroelectric == "Non":
+            hydroelectric = "0"
+        hydroelectric_tab.append(float(hydroelectric))
+
+        other = str(elt.get("other"))
+        other = other[:other.find("%")].replace(",", ".")
+        if other == "Non":
+            other = "0"
+        renewable_tab.append(float(other))
+
+        longitude_tab.append(float(elt.get("coordonates").get("lng")))
+        latitude_tab.append(float(elt.get("coordonates").get("lat")))
+
+    return {"country": country_tab, "consumption": consumption_tab, "fossil": fossil_tab, "nuclear": nuclear_tab, "hydroelectric": hydroelectric_tab, "renewable": renewable_tab, "latitude": latitude_tab, "longitude": longitude_tab}
+
 
 if __name__ == "__main__":
-    print(get_infos())
+    mergeInfo()
