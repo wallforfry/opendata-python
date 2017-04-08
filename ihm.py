@@ -58,6 +58,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.file_menu = QtWidgets.QMenu('&File', self)
         self.file_menu.addAction('&Update data', self.update_data,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_R)
+        self.file_menu.addAction('&Update counrty location', self.update_country_location)
         self.file_menu.addAction('&Change Geocoding Key', self.modal_google_api)
         self.file_menu.addAction('&Quit', self.fileQuit,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
@@ -130,6 +131,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                                     """Data are now up to date"""
                                     )
 
+    def update_country_location(self):
+        """
+        Update countryCoordonates.json with new country coordonates, open dialog when it's ended
+        :return: None
+        """
+        get_lat_long()
+        QtWidgets.QMessageBox.about(self, "Update country coordonates",
+                                    """Country coordonates are now up to date"""
+                                    )
     def about(self):
         """
         Open a message box with the following text
