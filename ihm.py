@@ -15,7 +15,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel, QComboBox, QPushButton
+from PyQt5.QtWidgets import QLabel, QComboBox, QPushButton, QInputDialog
 
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -58,6 +58,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.file_menu = QtWidgets.QMenu('&File', self)
         self.file_menu.addAction('&Update data', self.update_data,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_R)
+        self.file_menu.addAction('&Change Geocoding Key', self.modal_google_api)
         self.file_menu.addAction('&Quit', self.fileQuit,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
@@ -137,6 +138,17 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(self, "About",
                                     """This is an OpenData project about energies in the world for our Python course"""
                                     )
+
+    def modal_google_api(self):
+        """
+        Open a message box with line edit to change Google Maps Geocoding API Key
+        :return:
+        """
+        last_value = get_google_api_key()
+        key_value, okPressed = QInputDialog.getText(self, "Enter Api Key", "Google Maps Geocoding Api Key :", text=last_value)
+
+        if okPressed:
+            set_google_api_key(key_value)
 
     def plot_map(self):
         m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, \
@@ -235,4 +247,9 @@ def launch_gui():
     app = QtWidgets.QApplication(sys.argv)
     aw = ApplicationWindow()
     aw.show()
+
+    # On First launch ask Api Key
+    if get_google_api_key() == "":
+        aw.modal_google_api()
+
     sys.exit(app.exec_())

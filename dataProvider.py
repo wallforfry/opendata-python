@@ -134,7 +134,19 @@ def get_google_api_key():
     Get GoogleMaps Geocoding api key from googleApiKey.txt file
     :return: String ApiKey
     """
-    return open("googleApiKey.txt", mode="r").readline()
+    try:
+        return open("googleApiKey.txt", mode="r").readline()
+    except FileNotFoundError:
+        return ""
+
+
+def set_google_api_key(key_value):
+    """
+    Set GoogleMaps Geocoding api key in googleApiKey.txt file
+    :param key_value: Value of the new key
+    :return:
+    """
+    open("googleApiKey.txt", mode="w").write(key_value)
 
 
 def get_coordonates(address):
