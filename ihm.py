@@ -24,6 +24,7 @@ from matplotlib.figure import Figure
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.random import normal
 
 from functools import partial
 
@@ -84,6 +85,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.background_choose_list.addItem("From fossils")
         self.background_choose_list.addItem("From nuclear")
         self.background_choose_list.addItem("From renewable")
+        self.background_choose_list.addItem("From hydroelectric")
 
         # Buttons
         button = QPushButton("Display first map")
@@ -93,6 +95,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.layout = QtWidgets.QVBoxLayout(self.main_widget)
         self.figure = plt.figure(0)
         self.first_canvas = FigureCanvas(self.figure)
+        self.first_canvas.draw()
 
         # Add components in layout
         self.layout.addWidget(label_points)
@@ -110,9 +113,11 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Events Listeners
         button.clicked.connect(self.draw_map)
-        button2.clicked.connect(self.plot_map2)
+        #button2.clicked.connect(self.plot_map2)
+        button2.clicked.connect(self.draw_histogram)
         self.points_choose_list.activated.connect(partial(self.choose_points))
-        self.background_choose_list.activated.connect(partial(self.choose_background))
+        #self.background_choose_list.activated.connect(partial(self.choose_background))
+        self.background_choose_list.activated.connect(partial(self.draw_histogram))
 
     def fileQuit(self):
         self.close()
@@ -217,6 +222,36 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         plt.title('Température moyenne à 12:00 (janvier 2014)')
         plt.colorbar(SCA)
         # plt.show()
+        self.first_canvas.draw()
+        self.figure.clear()
+
+    def draw_histogram(self):
+        """
+        Handle values of combobox and draw correspondant histogram
+        :return: None
+        """
+        value = self.background_choose_list.currentText()
+
+        if value == "From fossils":
+            data = self.fossil
+            title = "fossile"
+        elif value == "From nuclear":
+            data = self.nuclear
+            title = "nuclear"
+        elif value == "From renewable":
+            data = self.renewable
+            title = "renewable"
+        elif value == "From hydroelectric":
+            data = self.hydroelectric
+            title = "hydroelectric"
+        else:
+            return
+
+        plt.hist(data, bins=len(data)//20)
+        plt.title("Consumption ratio of "+title+" energie in the world")
+        plt.xlabel("Percentage of "+title)
+        plt.ylabel("Number of country")
+
         self.first_canvas.draw()
         self.figure.clear()
 
