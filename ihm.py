@@ -140,6 +140,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(self, "Update country coordonates",
                                     """Country coordonates are now up to date"""
                                     )
+
     def about(self):
         """
         Open a message box with the following text
@@ -155,7 +156,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         :return:
         """
         last_value = get_google_api_key()
-        key_value, okPressed = QInputDialog.getText(self, "Enter Api Key", "Google Maps Geocoding Api Key :", text=last_value)
+        key_value, okPressed = QInputDialog.getText(self, "Enter Api Key", "Google Maps Geocoding Api Key :",
+                                                    text=last_value)
 
         if okPressed:
             set_google_api_key(key_value)
@@ -173,7 +175,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.figure.clear()
 
     def plot_map2(self):
-        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
+        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
+                    resolution='c')
         m.drawcoastlines()
         m.fillcontinents(color='red', lake_color='aqua')
         # draw parallels and meridians.

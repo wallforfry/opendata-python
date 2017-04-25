@@ -75,7 +75,7 @@ def get_lat_long():
     countrys = get_data(data).keys()
     result = []
     for country in countrys:
-        result.append({"country": country, "coordonates": get_data(country)})
+        result.append({"country": country, "coordonates": get_coordonates(country)})
 
     with open("countryCoordonates.json", mode="w") as f:
         f.write(json.dumps(result))
