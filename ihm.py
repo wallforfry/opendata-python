@@ -15,7 +15,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel, QComboBox, QPushButton, QInputDialog
+from PyQt5.QtWidgets import QLabel, QComboBox, QPushButton
 
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -24,7 +24,6 @@ from matplotlib.figure import Figure
 from mpl_toolkits.basemap import Basemap
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.random import normal
 
 from functools import partial
 
@@ -59,8 +58,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.file_menu = QtWidgets.QMenu('&File', self)
         self.file_menu.addAction('&Update data', self.update_data,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_R)
-        self.file_menu.addAction('&Update counrty location', self.update_country_location)
-        self.file_menu.addAction('&Change Geocoding Key', self.modal_google_api)
         self.file_menu.addAction('&Quit', self.fileQuit,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
@@ -85,7 +82,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.background_choose_list.addItem("From fossils")
         self.background_choose_list.addItem("From nuclear")
         self.background_choose_list.addItem("From renewable")
-        self.background_choose_list.addItem("From hydroelectric")
+        self.background_choose_list.addItem("Global consumption")
 
         # Buttons
         button = QPushButton("Display first map")
@@ -95,7 +92,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.layout = QtWidgets.QVBoxLayout(self.main_widget)
         self.figure = plt.figure(0)
         self.first_canvas = FigureCanvas(self.figure)
-        self.first_canvas.draw()
 
         # Add components in layout
         self.layout.addWidget(label_points)
@@ -113,11 +109,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Events Listeners
         button.clicked.connect(self.draw_map)
-        #button2.clicked.connect(self.plot_map2)
-        button2.clicked.connect(self.draw_histogram)
+        button2.clicked.connect(self.plot_map2)
         self.points_choose_list.activated.connect(partial(self.choose_points))
-        #self.background_choose_list.activated.connect(partial(self.choose_background))
-        self.background_choose_list.activated.connect(partial(self.draw_histogram))
+        self.background_choose_list.activated.connect(partial(self.choose_background))
 
     def fileQuit(self):
         self.close()
@@ -136,16 +130,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                                     """Data are now up to date"""
                                     )
 
-    def update_country_location(self):
-        """
-        Update countryCoordonates.json with new country coordonates, open dialog when it's ended
-        :return: None
-        """
-        get_lat_long()
-        QtWidgets.QMessageBox.about(self, "Update country coordonates",
-                                    """Country coordonates are now up to date"""
-                                    )
-
     def about(self):
         """
         Open a message box with the following text
@@ -154,18 +138,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(self, "About",
                                     """This is an OpenData project about energies in the world for our Python course"""
                                     )
-
-    def modal_google_api(self):
-        """
-        Open a message box with line edit to change Google Maps Geocoding API Key
-        :return:
-        """
-        last_value = get_google_api_key()
-        key_value, okPressed = QInputDialog.getText(self, "Enter Api Key", "Google Maps Geocoding Api Key :",
-                                                    text=last_value)
-
-        if okPressed:
-            set_google_api_key(key_value)
 
     def plot_map(self):
         m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, \
@@ -193,17 +165,21 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
     def draw_map(self):
 
+        d = {"From fossils": (self.fossil, 'Greys'), "From nuclear": (self.nuclear, 'Blues'), "From renewable": (self.renewable, 'Greens'), 'Global consumption': (self.consumption, "Reds")}
+
         LATS = self.latitude
         LONGS = self.longitude
-        TEMPS = self.fossil
+        DATA = d.get(self.background_choose_list.currentText())[0]
+        COLOR = d.get(self.background_choose_list.currentText())[1]
 
         print(LATS)
         print(len(LONGS))
-        print(len(TEMPS))
+        print(len(DATA))
 
-        MIN_TEMP = min(TEMPS)
-        MY_MAP = Basemap(projection='robin', lat_0=0, lon_0=-100,
-                         resolution='l', area_thresh=1000.0)
+        MIN_DATA = min(DATA)
+        MAX_DATA = max(DATA)
+        MY_MAP = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
+                         resolution='c')
         # MY_MAP.bluemarble()
         MY_MAP.drawcoastlines()
         MY_MAP.drawmapboundary(fill_color='aqua')
@@ -214,44 +190,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Conversion des coordonnées géographiques en coordonnées graphiques
         X_COORD, Y_COORD = MY_MAP(LONGS, LATS)
         # Get a color map
-        CMAP = plt.cm.get_cmap('Greens')
+        CMAP = plt.cm.get_cmap(COLOR)
         # Construction d'un tableau de taille des points affichés
-        SIZE = (np.array(TEMPS) - MIN_TEMP + 1) * 20
+        SIZE = (np.array(DATA) - MIN_DATA + 1) / 4
         # scatter plot des températures
-        SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=TEMPS, cmap=CMAP)
+        SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=DATA, cmap=CMAP, zorder=10)
         plt.title('Température moyenne à 12:00 (janvier 2014)')
-        plt.colorbar(SCA)
         # plt.show()
-        self.first_canvas.draw()
-        self.figure.clear()
-
-    def draw_histogram(self):
-        """
-        Handle values of combobox and draw correspondant histogram
-        :return: None
-        """
-        value = self.background_choose_list.currentText()
-
-        if value == "From fossils":
-            data = self.fossil
-            title = "fossile"
-        elif value == "From nuclear":
-            data = self.nuclear
-            title = "nuclear"
-        elif value == "From renewable":
-            data = self.renewable
-            title = "renewable"
-        elif value == "From hydroelectric":
-            data = self.hydroelectric
-            title = "hydroelectric"
-        else:
-            return
-
-        plt.hist(data, bins=len(data)//20)
-        plt.title("Consumption ratio of "+title+" energie in the world")
-        plt.xlabel("Percentage of "+title)
-        plt.ylabel("Number of country")
-
+        plt.colorbar(SCA)
         self.first_canvas.draw()
         self.figure.clear()
 
@@ -277,7 +223,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         value = self.background_choose_list.currentText()
         print(value)
 
-        if value == "From fossile":
+        if value == "From fossils":
             pass
         elif value == "From nuclear":
             pass
@@ -295,9 +241,4 @@ def launch_gui():
     app = QtWidgets.QApplication(sys.argv)
     aw = ApplicationWindow()
     aw.show()
-
-    # On First launch ask Api Key
-    if get_google_api_key() == "":
-        aw.modal_google_api()
-
     sys.exit(app.exec_())
