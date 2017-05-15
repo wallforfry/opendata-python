@@ -52,7 +52,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("OpenData Python")
         self.setWindowIcon(QIcon('icon.png'))
-        self.resize(1000, 700)
+        self.resize(1000, 600)
 
         # Menu bar
         self.file_menu = QtWidgets.QMenu('&File', self)
@@ -70,13 +70,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.main_widget = QtWidgets.QWidget(self)
 
-        # First combobox part
-        #label_points = QLabel("Points :", self)
-        #self.points_choose_list = QComboBox(self)
-        #self.points_choose_list.addItem("Consumption")
-        #self.points_choose_list.addItem("Production")
-
-        # Second combobox part
+        # Combobox part
         label_background = QLabel("Data choice : ", self)
         self.background_choose_list = QComboBox(self)
         self.background_choose_list.addItem("From fossils")
@@ -86,7 +80,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Buttons
         button = QPushButton("Display Map")
-        #button2 = QPushButton("Display second map")
 
         # Maps part
         self.layout = QtWidgets.QVBoxLayout(self.main_widget)
@@ -96,14 +89,11 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Add components in layout
         self.choice_widget = QtWidgets.QWidget(self)
         self.grid = QtWidgets.QGridLayout(self.choice_widget);
-        self.layout.addWidget(self.choice_widget);
-        #self.layout.addWidget(label_points)
-        #self.layout.addWidget(self.points_choose_list)
+        self.layout.addWidget(self.choice_widget)
         self.grid.addWidget(label_background, 0, 0)
         self.grid.addWidget(self.background_choose_list, 0, 1)
         self.grid.addWidget(button, 0, 2)
         self.layout.addWidget(self.first_canvas)
-        #self.layout.addWidget(button2)
 
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
@@ -112,9 +102,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Events Listeners
         button.clicked.connect(self.draw_map)
-        #button2.clicked.connect(self.plot_map2)
-        #self.points_choose_list.activated.connect(partial(self.choose_points))
-        self.background_choose_list.activated.connect(partial(self.choose_background))
+        self.background_choose_list.activated.connect(partial(self.choose_points))
 
     def fileQuit(self):
         self.close()
@@ -141,30 +129,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(self, "About",
                                     """This is an OpenData project about energies in the world for our Python course"""
                                     )
-
-    def plot_map(self):
-        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, \
-                    llcrnrlon=-180, urcrnrlon=180, lat_ts=20, resolution='c')
-        m.drawcoastlines()
-        m.fillcontinents(color='coral', lake_color='aqua')
-        # draw parallels and meridians.
-        m.drawparallels(np.arange(-90., 91., 30.))
-        m.drawmeridians(np.arange(-180., 181., 60.))
-        m.drawmapboundary(fill_color='aqua')
-        self.first_canvas.draw()
-        self.figure.clear()
-
-    def plot_map2(self):
-        m = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
-                    resolution='c')
-        m.drawcoastlines()
-        m.fillcontinents(color='red', lake_color='aqua')
-        # draw parallels and meridians.
-        m.drawparallels(np.arange(-90., 91., 30.))
-        m.drawmeridians(np.arange(-180., 181., 60.))
-        m.drawmapboundary(fill_color='blue')
-        self.first_canvas.draw()
-        self.figure.clear()
 
     def draw_map(self):
 
@@ -205,20 +169,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.figure.clear()
 
     def choose_points(self):
-        """
-        Handle values of the first combobox
-        :return: None
-        """
-        value = self.points_choose_list.currentText()
-        print(value)
-        if value == "Consumption":
-            pass
-        elif value == "Production":
-            pass
-        else:
-            pass
-
-    def choose_background(self):
         """
         Handle values of the second combobox
         :return: None
