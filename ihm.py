@@ -71,13 +71,13 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.main_widget = QtWidgets.QWidget(self)
 
         # First combobox part
-        label_points = QLabel("Points :", self)
-        self.points_choose_list = QComboBox(self)
-        self.points_choose_list.addItem("Consumption")
-        self.points_choose_list.addItem("Production")
+        #label_points = QLabel("Points :", self)
+        #self.points_choose_list = QComboBox(self)
+        #self.points_choose_list.addItem("Consumption")
+        #self.points_choose_list.addItem("Production")
 
         # Second combobox part
-        label_background = QLabel("Map's background : ", self)
+        label_background = QLabel("Data choice : ", self)
         self.background_choose_list = QComboBox(self)
         self.background_choose_list.addItem("From fossils")
         self.background_choose_list.addItem("From nuclear")
@@ -85,8 +85,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.background_choose_list.addItem("Global consumption")
 
         # Buttons
-        button = QPushButton("Display first map")
-        button2 = QPushButton("Display second map")
+        button = QPushButton("Display Map")
+        #button2 = QPushButton("Display second map")
 
         # Maps part
         self.layout = QtWidgets.QVBoxLayout(self.main_widget)
@@ -94,13 +94,16 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.first_canvas = FigureCanvas(self.figure)
 
         # Add components in layout
-        self.layout.addWidget(label_points)
-        self.layout.addWidget(self.points_choose_list)
-        self.layout.addWidget(label_background)
-        self.layout.addWidget(self.background_choose_list)
+        self.choice_widget = QtWidgets.QWidget(self)
+        self.grid = QtWidgets.QGridLayout(self.choice_widget);
+        self.layout.addWidget(self.choice_widget);
+        #self.layout.addWidget(label_points)
+        #self.layout.addWidget(self.points_choose_list)
+        self.grid.addWidget(label_background, 0, 0)
+        self.grid.addWidget(self.background_choose_list, 0, 1)
+        self.grid.addWidget(button, 0, 2)
         self.layout.addWidget(self.first_canvas)
-        self.layout.addWidget(button)
-        self.layout.addWidget(button2)
+        #self.layout.addWidget(button2)
 
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
@@ -109,8 +112,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         # Events Listeners
         button.clicked.connect(self.draw_map)
-        button2.clicked.connect(self.plot_map2)
-        self.points_choose_list.activated.connect(partial(self.choose_points))
+        #button2.clicked.connect(self.plot_map2)
+        #self.points_choose_list.activated.connect(partial(self.choose_points))
         self.background_choose_list.activated.connect(partial(self.choose_background))
 
     def fileQuit(self):
