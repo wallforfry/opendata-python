@@ -80,7 +80,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.background_choose_list.addItem("From nuclear")
         self.background_choose_list.addItem("From renewable")
         self.background_choose_list.addItem("From hydroelectric")
-        self.background_choose_list.addItem("Global consumption")
 
         # Buttons
         button = QPushButton("Display Map")
@@ -161,20 +160,18 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             set_google_api_key(key_value)
 
     def draw_map(self):
+        """
+        Draw the map chosen in the menu
+        :return: none
+        """
 
-        d = {"From fossils": (self.fossil, 'Greys'), "From nuclear": (self.nuclear, 'Blues'), "From renewable": (self.renewable, 'Greens'), 'Global consumption': (self.consumption, "Reds")}
+        d = {"From fossils": (self.fossil, 'Greys', "Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', "Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', "Renewable Energy Production"), 'Global consumption': (self.consumption, "Purples", "Global Energy Consumption")}
 
         LATS = self.latitude
         LONGS = self.longitude
         DATA = d.get(self.background_choose_list.currentText())[0]
         COLOR = d.get(self.background_choose_list.currentText())[1]
-
-        print(LATS)
-        print(len(LONGS))
-        print(len(DATA))
-
-        MIN_DATA = min(DATA)
-        MAX_DATA = max(DATA)
+        print(DATA)
         MY_MAP = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
                          resolution='c')
         # MY_MAP.bluemarble()
@@ -189,10 +186,11 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Get a color map
         CMAP = plt.cm.get_cmap(COLOR)
         # Construction d'un tableau de taille des points affichés
-        SIZE = (np.array(DATA) - MIN_DATA + 1) / 4
+        #SIZE = (np.array(DATA) - MIN_DATA + 1) / 4
+        SIZE = 15
         # scatter plot des températures
         SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=DATA, cmap=CMAP, zorder=10)
-        plt.title('Température moyenne à 12:00 (janvier 2014)')
+        plt.title(d.get(self.background_choose_list.currentText())[2])
         # plt.show()
         plt.colorbar(SCA)
         self.first_canvas.draw()

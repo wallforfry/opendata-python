@@ -197,10 +197,20 @@ def get_infos_for_basemap():
             country_tab.append(country)
 
             consumption = elt.get("consumption")
-            consumption = consumption[:consumption.find(" ")].replace(",", ".")
+            value = consumption[:consumption.find(" ")].replace(",", ".")
+            factor = consumption.split(" ")[1]
+            if factor == "million":
+                factor = 1000000
+            elif factor == "billion":
+                factor = 1000000000
+            elif factor == "trillion":
+                factor = 1000000000000
+            else:
+                factor = 1
+
             if consumption == "Non":
                 consumption = "0"
-            consumption_tab.append(float(consumption))
+            consumption_tab.append(float(value)*factor)
 
             fossil = str(elt.get("fossil"))
             fossil = fossil[:fossil.find("%")].replace(",", ".")
