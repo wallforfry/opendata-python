@@ -109,7 +109,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Events Listeners
         button.clicked.connect(self.draw_map)
         button2.clicked.connect(self.draw_histogram)
-        #self.background_choose_list.activated.connect(partial(self.choose_points))
 
     def fileQuit(self):
         self.close()
@@ -165,13 +164,12 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         :return: none
         """
 
-        d = {"From fossils": (self.fossil, 'Greys', "Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', "Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', "Renewable Energy Production"), 'Global consumption': (self.consumption, "Purples", "Global Energy Consumption")}
+        d = {"From fossils": (self.fossil, 'Greys', "Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', "Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', "Renewable Energy Production"), 'From hydroelectric': (self.hydroelectric, "Purples", "Hydroelectric Energy Production")}
 
         LATS = self.latitude
         LONGS = self.longitude
         DATA = d.get(self.background_choose_list.currentText())[0]
         COLOR = d.get(self.background_choose_list.currentText())[1]
-        print(DATA)
         MY_MAP = Basemap(projection='merc', llcrnrlat=-80, urcrnrlat=80, llcrnrlon=-180, urcrnrlon=180, lat_ts=20,
                          resolution='c')
         # MY_MAP.bluemarble()
@@ -215,9 +213,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         elif value == "From hydroelectric":
             data = self.hydroelectric
             title = "hydroelectric"
-        elif value == "Global consumption":
-            data = self.consumption
-            title = "consumption"
         else:
             return
 
