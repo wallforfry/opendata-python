@@ -143,7 +143,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         :return: None
         """
         QtWidgets.QMessageBox.about(self, "About",
-                                    """This is an OpenData project about energies in the world for our Python course"""
+                                    "This is an OpenData project about energies in the world for our Python "
+                                    "course.\n\nCoded by COHEN Johana & DELEVACQ Wallerand\n\nFind us on "
+                                    "https://github.com/wallforfry/opendata-python "
                                     )
 
     def modal_google_api(self):
