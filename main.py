@@ -10,5 +10,5 @@ progname = os.path.basename(sys.argv[0])
 progversion = "1.0"
 
 if __name__ == "__main__":
-    print("HelloWorld!")
+    print("Application launching")
     launch_gui()

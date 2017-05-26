@@ -166,7 +166,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         :return: none
         """
 
-        d = {"From fossils": (self.fossil, 'Greys', "Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', "Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', "Renewable Energy Production"), 'From hydroelectric': (self.hydroelectric, "Purples", "Hydroelectric Energy Production")}
+        d = {"From fossils": (self.fossil, 'Greys', " Percentage of Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', " Percentage of Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', " Percentage of Renewable Energy Production"), 'From hydroelectric': (self.hydroelectric, "Purples", " Percentage of Hydroelectric Energy Production")}
 
         LATS = self.latitude
         LONGS = self.longitude
@@ -185,13 +185,11 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         X_COORD, Y_COORD = MY_MAP(LONGS, LATS)
         # Get a color map
         CMAP = plt.cm.get_cmap(COLOR)
-        # Construction d'un tableau de taille des points affichés
-        #SIZE = (np.array(DATA) - MIN_DATA + 1) / 4
+        #Points size
         SIZE = 15
         # scatter plot des températures
         SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=DATA, cmap=CMAP, zorder=10)
         plt.title(d.get(self.background_choose_list.currentText())[2])
-        # plt.show()
         plt.colorbar(SCA)
         self.first_canvas.draw()
         self.figure.clear()
@@ -219,29 +217,14 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             return
 
         plt.hist(data, bins=len(data) // 20)
-        plt.title("Consumption ratio of "+title+" energie in the world")
+        plt.title("Production ratio of "+title+" energy in the world")
         plt.xlabel("Percentage of "+title)
-        plt.ylabel("Number of country")
+        plt.ylabel("Number of countries")
 
         self.first_canvas.draw()
         self.figure.clear()
 
-    def choose_points(self):
-        """
-        Handle values of the second combobox
-        :return: None
-        """
-        value = self.background_choose_list.currentText()
-        print(value)
 
-        if value == "From fossils":
-            pass
-        elif value == "From nuclear":
-            pass
-        elif value == "From renewable":
-            pass
-        else:
-            pass
 
 
 def launch_gui():

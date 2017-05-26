@@ -209,7 +209,7 @@ def get_infos_for_basemap():
                 factor = 1
 
             if consumption == "Non":
-                consumption = "0"
+                value = "0"
             consumption_tab.append(float(value)*factor)
 
             fossil = str(elt.get("fossil"))
