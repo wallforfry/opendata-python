@@ -71,7 +71,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
         self.help_menu.addAction('&About', self.about)
 
-        self.main_widget = QtWidgets.QWidget(self)
 
         # Combobox part
         label_background = QLabel("Data choice : ", self)
@@ -85,21 +84,27 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         button = QPushButton("Display Map")
         button2 = QPushButton("Display Graph")
 
-        # Maps part
+        #Main wigdet
+        self.main_widget = QtWidgets.QWidget(self)
         self.layout = QtWidgets.QVBoxLayout(self.main_widget)
+
+        # Maps part
         self.figure = plt.figure(0)
         self.first_canvas = FigureCanvas(self.figure)
-        self.first_canvas.draw()
 
-        # Add components in layout
+        #Choice Widgets layout
         self.choice_widget = QtWidgets.QWidget(self)
-        self.grid = QtWidgets.QGridLayout(self.choice_widget);
+        self.choice_widget_layout = QtWidgets.QHBoxLayout(self.choice_widget)
+        self.choice_widget_layout.addWidget(label_background)
+        self.choice_widget_layout.addWidget(self.background_choose_list)
+        self.choice_widget_layout.addWidget(button)
+        self.choice_widget_layout.addWidget(button2)
+        self.choice_widget.setFixedHeight(50)
+
+        # Add components in Main layout
         self.layout.addWidget(self.choice_widget)
-        self.grid.addWidget(label_background, 0, 0)
-        self.grid.addWidget(self.background_choose_list, 0, 1)
-        self.grid.addWidget(button, 0, 2)
-        self.grid.addWidget(button2, 0, 3)
         self.layout.addWidget(self.first_canvas)
+
 
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
@@ -173,7 +178,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         Draw the map chosen in the menu
         :return: none
         """
-
+        plt.clf()
         d = {"From fossils": (self.fossil, 'Greys', " Percentage of Fossil Energy Production"), "From nuclear": (self.nuclear, 'Blues', " Percentage of Nuclear Energy Production"), "From renewable": (self.renewable, 'Greens', " Percentage of Renewable Energy Production"), 'From hydroelectric': (self.hydroelectric, "Purples", " Percentage of Hydroelectric Energy Production")}
 
         LATS = self.latitude
@@ -200,13 +205,13 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         plt.title(d.get(self.background_choose_list.currentText())[2])
         plt.colorbar(SCA)
         self.first_canvas.draw()
-        self.figure.clear()
 
     def draw_histogram(self):
         """
         Handle values of combobox and draw correspondant histogram
         :return: None
         """
+        plt.clf()
         value = self.background_choose_list.currentText()
 
         if value == "From fossils":
@@ -230,7 +235,6 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         plt.ylabel("Number of countries")
 
         self.first_canvas.draw()
-        self.figure.clear()
 
 
 
