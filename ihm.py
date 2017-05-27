@@ -122,18 +122,26 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         :return: None
         """
         # get_lat_long()
-        merge_info()
-        QtWidgets.QMessageBox.about(self, "Update data",
-                                    """Data are now up to date"""
-                                    )
+        try:
+            merge_info()
+        except NoInternetConnexionException as e:
+            QtWidgets.QMessageBox.warning(self, "Update data", str(e))
+        else:
+            QtWidgets.QMessageBox.about(self, "Update data",
+                                        """Data are now up to date"""
+                                        )
 
     def update_country_location(self):
         """
         Update countryCoordonates.json with new country coordonates, open dialog when it's ended
         :return: None
         """
-        get_lat_long()
-        QtWidgets.QMessageBox.about(self, "Update country coordonates",
+        try:
+            get_lat_long()
+        except NoInternetConnexionException as e:
+            QtWidgets.QMessageBox.warning(self, "Update data", str(e))
+        else:
+            QtWidgets.QMessageBox.about(self, "Update country coordonates",
                                     """Country coordonates are now up to date"""
                                     )
 

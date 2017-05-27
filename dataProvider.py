@@ -11,6 +11,14 @@ import json
 import time
 
 
+class NoInternetConnexionException(Exception):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return "You are not connected to internet"
+
+
 class MyParser(HTMLParser):
     def error(self, message):
         print("Error")
@@ -68,14 +76,16 @@ def get_lat_long():
     try:
         u = urllib.request.urlopen(url)
     except urllib.request.URLError:
-        print("Pas de connexion internet")
-        return
+        raise NoInternetConnexionException()
 
     data = u.read().decode('utf8')
     countrys = get_data(data).keys()
     result = []
-    for country in countrys:
-        result.append({"country": country, "coordonates": get_coordonates(country)})
+    try:
+        for country in countrys:
+            result.append({"country": country, "coordonates": get_coordonates(country)})
+    except NoInternetConnexionException as e:
+        raise e
 
     with open("countryCoordonates.json", mode="w") as f:
         f.write(json.dumps(result))
@@ -98,8 +108,8 @@ def merge_info():
         try:
             u = urllib.request.urlopen(url)
         except urllib.request.URLError:
-            print("Pas de connexion internet")
-            return
+            raise NoInternetConnexionException()
+
         data = u.read().decode('utf8')
         dt.append(data)
 
@@ -169,7 +179,7 @@ def get_coordonates(address):
             print(e)
 
     except urllib.error.URLError as e:
-        print("Pas de connexion internet")
+        raise NoInternetConnexionException()
 
 
 def get_infos_for_basemap():
