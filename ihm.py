@@ -194,9 +194,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         # Get a color map
         CMAP = plt.cm.get_cmap(COLOR)
         #Points size
-        SIZE = 15
+        SIZE = 70
         # scatter plot des températures
-        SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='o', c=DATA, cmap=CMAP, zorder=10)
+        SCA = MY_MAP.scatter(X_COORD, Y_COORD, s=SIZE, marker='.', c=DATA, cmap=CMAP, zorder=10)
         plt.title(d.get(self.background_choose_list.currentText())[2])
         plt.colorbar(SCA)
         self.first_canvas.draw()
