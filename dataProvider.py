@@ -130,7 +130,7 @@ def merge_info():
         c["nuclear"] = nuclear.get(key)
         c["hydroelectric"] = hydroelectric.get(key)
         c["other"] = other.get(key)
-        c["coordonates"] = coordonates[i].get("coordonates")
+        c["coordonates"] = searchCountry(key, coordonates)
         world.append(c)
 
         i += 1
@@ -138,6 +138,10 @@ def merge_info():
     with open("data.json", mode="w") as f:
         f.write(json.dumps(world))
 
+def searchCountry(name, tab):
+    for elt in tab:
+        if elt.get("country") == name:
+            return elt.get("coordonates")
 
 def get_google_api_key():
     """
